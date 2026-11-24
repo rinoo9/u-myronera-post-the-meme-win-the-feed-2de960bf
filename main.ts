@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 
 // Entry for make.fun bounty "Post the Meme, Win the Feed"
 // (u-myronera-post-the-meme-win-the-feed-2de960bf).
@@ -16,7 +16,17 @@ if (
   );
 }
 
+const memePath = new URL("./meme.png", import.meta.url);
+if (!existsSync(memePath)) {
+  throw new Error("meme.png must exist next to main.ts");
+}
+const memeSize = statSync(memePath).size;
+if (memeSize === 0) {
+  throw new Error("meme.png must be non-empty");
+}
+
 console.log("Entry post:", post.url);
+console.log(`Meme: meme.png (${memeSize} bytes)`);
 console.log(
   "Meme: meme.png — 'My agent entered 47 bounties today. It won $2. We are rich.'",
 );
